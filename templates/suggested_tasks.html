@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Suggested Tasks - TaskMate{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+
+    <h2 class="fw-bold">
+        📚 Suggested Tasks
+    </h2>
+
+    <p class="text-muted">
+        Choose useful academic tasks and add them to your personal task list.
+    </p>
+
+</div>
+
+
+<div class="row g-4">
+
+    {% for task in tasks %}
+
+    <div class="col-md-6 col-lg-4">
+
+        <div class="card suggested-task-card border-0 shadow-sm h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span class="badge bg-primary-subtle text-primary">
+                        {{ task['subject'] }}
+                    </span>
+
+
+                    {% if task['priority'] == 'High' %}
+
+                    <span class="badge bg-danger">
+                        High
+                    </span>
+
+                    {% elif task['priority'] == 'Medium' %}
+
+                    <span class="badge bg-warning text-dark">
+                        Medium
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-success">
+                        Low
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <h5 class="fw-bold">
+                    {{ task['title'] }}
+                </h5>
+
+
+                <p class="text-muted">
+                    {{ task['description'] }}
+                </p>
+
+
+                <a
+                    href="{{ url_for('add_suggested', suggested_id=task['id']) }}"
+                    class="btn btn-outline-primary w-100"
+                >
+                    + Add to My Tasks
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

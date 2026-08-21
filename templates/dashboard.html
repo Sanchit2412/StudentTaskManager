@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - TaskMate{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold mb-1">
+            Welcome, {{ session.get('user_name') }} 👋
+        </h2>
+
+        <p class="text-muted mb-0">
+            Manage your academic tasks and stay productive.
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('add_task') }}"
+        class="btn btn-primary"
+    >
+        + Add Task
+    </a>
+
+</div>
+
+
+<div class="row g-3 mb-4">
+
+    <div class="col-md-4">
+
+        <div class="stat-card">
+
+            <div class="stat-icon bg-primary-subtle">
+                📋
+            </div>
+
+            <div>
+                <h3>{{ total }}</h3>
+                <p>Total Tasks</p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-4">
+
+        <div class="stat-card">
+
+            <div class="stat-icon bg-warning-subtle">
+                ⏳
+            </div>
+
+            <div>
+                <h3>{{ pending }}</h3>
+                <p>Pending Tasks</p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-4">
+
+        <div class="stat-card">
+
+            <div class="stat-icon bg-success-subtle">
+                ✅
+            </div>
+
+            <div>
+                <h3>{{ completed }}</h3>
+                <p>Completed Tasks</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="row g-4">
+
+    <div class="col-lg-8">
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-header bg-white border-0 pt-4 px-4">
+
+                <div class="d-flex justify-content-between">
+
+                    <h5 class="fw-bold">
+                        My Tasks
+                    </h5>
+
+                    <a
+                        href="{{ url_for('my_tasks') }}"
+                        class="text-decoration-none"
+                    >
+                        View All
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body px-4">
+
+                {% if tasks %}
+
+                    {% for task in tasks[:6] %}
+
+                    <div class="task-item">
+
+                        <div class="task-check">
+
+                            {% if task['status'] == 'Completed' %}
+
+                                <span class="completed-icon">
+                                    ✓
+                                </span>
+
+                            {% else %}
+
+                                <a
+                                    href="{{ url_for('complete_task', task_id=task['id']) }}"
+                                    class="check-button"
+                                >
+                                    ✓
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="task-content">
+
+                            <h6 class="
+                                {% if task['status'] == 'Completed' %}
+                                    text-decoration-line-through text-muted
+                                {% endif %}
+                            ">
+                                {{ task['title'] }}
+                            </h6>
+
+                            <small class="text-muted">
+
+                                {{ task['subject'] or 'General' }}
+
+                                {% if task['due_date'] %}
+                                    • Due {{ task['due_date'] }}
+                                {% endif %}
+
+                            </small>
+
+                        </div>
+
+
+                        <div>
+
+                            {% if task['priority'] == 'High' %}
+
+                                <span class="badge bg-danger">
+                                    High
+                                </span>
+
+                            {% elif task['priority'] == 'Medium' %}
+
+                                <span class="badge bg-warning text-dark">
+                                    Medium
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-success">
+                                    Low
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            📝
+                        </div>
+
+                        <h5>
+                            No tasks yet
+                        </h5>
+
+                        <p class="text-muted">
+                            Add your first task or choose one from suggested tasks.
+                        </p>
+
+                        <a
+                            href="{{ url_for('add_task') }}"
+                            class="btn btn-primary"
+                        >
+                            Add Your First Task
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-4">
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-body">
+
+                <h5 class="fw-bold">
+                    Your Progress
+                </h5>
+
+                <div class="progress mt-3" style="height: 12px;">
+
+                    <div class="progress mt-3" style="height: 12px;">
+
+    <div
+        class="progress-bar bg-success"
+        role="progressbar"
+        data-progress="{{ progress }}"
+    ></div>
+
+</div>
+
+                </div>
+
+                <div class="d-flex justify-content-between mt-2">
+
+                    <small class="text-muted">
+                        {{ completed }} completed
+                    </small>
+
+                    <strong>
+                        {{ progress }}%
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card border-0 shadow-sm suggested-box">
+
+            <div class="card-body">
+
+                <div class="suggestion-icon">
+                    💡
+                </div>
+
+                <h5 class="fw-bold">
+                    Need something to do?
+                </h5>
+
+                <p class="text-muted">
+                    Browse tasks prepared specially for students and add them to your task list.
+                </p>
+
+                <a
+                    href="{{ url_for('suggested_tasks') }}"
+                    class="btn btn-outline-primary w-100"
+                >
+                    Browse Suggested Tasks
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
